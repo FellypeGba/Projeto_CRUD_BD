@@ -3,8 +3,8 @@ import psycopg2.extras
 
 DB_CONFIG = {
     "dbname": "crud_flask",
-    "user": "postgres",
-    "password": "senha",
+    "user": "postgres", #insira aqui o usuario do postgreSQL
+    "password": "senha", #insira aqui a senha do postgrSQL
     "host": "localhost",
     "port": 5432
 }
