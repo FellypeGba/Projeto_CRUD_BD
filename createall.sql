@@ -2,7 +2,7 @@
 CREATE DATABASE crud_flask;
 
 
--- Tabelas (
+-- Tabelas 
 CREATE TABLE cliente (
   codcliente      SERIAL PRIMARY KEY,
   nomecliente    VARCHAR(80) NOT NULL,
