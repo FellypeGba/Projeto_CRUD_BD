@@ -13,14 +13,14 @@ routes = Blueprint("routes", __name__)
 def criar_cliente():
     data = request.json
     query = """
-        INSERT INTO cliente (nomecliennte, emailcliente, cpf, datanasc, telefonecliente)
+        INSERT INTO cliente (nomecliente, emailcliente, cpf, datanasc, telefonecliente)
         VALUES (%s, %s, %s, %s, %s)
         RETURNING codcliente;
     """
     conn = get_connection()
     cur = conn.cursor()
     cur.execute(query, (
-        data["nomecliennte"],
+        data["nomecliente"],
         data["emailcliente"],
         data["cpf"],
         data["datanasc"],
@@ -49,13 +49,13 @@ def atualizar_cliente(codcliente):
     data = request.json
     query = """
         UPDATE cliente
-        SET nomecliennte=%s, emailcliente=%s, cpf=%s, datanasc=%s, telefonecliente=%s
+        SET nomecliente=%s, emailcliente=%s, cpf=%s, datanasc=%s, telefonecliente=%s
         WHERE codcliente=%s;
     """
     conn = get_connection()
     cur = conn.cursor()
     cur.execute(query, (
-        data["nomecliennte"],
+        data["nomecliente"],
         data["emailcliente"],
         data["cpf"],
         data["datanasc"],
