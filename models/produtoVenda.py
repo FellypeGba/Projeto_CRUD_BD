@@ -15,7 +15,12 @@ def inserir(codProd, codVenda, qtdVenda, valorUnd):
 def listar(codVenda):
   conn = get_connection()
   cur = conn.cursor()
-  cur.execute("SELECT * FROM produtoVenda WHERE codVenda=%s;")
+  cur.execute("""
+    SELECT P.nomeProduto, PV.* FROM produtoVenda PV
+    INNER JOIN produto P
+    ON PV.codProd = P.codProd
+    WHERE codVenda=%s;
+  """, (codVenda))
   rows = cur.fetchall()
   cur.close()
   conn.close()

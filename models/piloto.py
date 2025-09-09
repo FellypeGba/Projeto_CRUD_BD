@@ -26,8 +26,8 @@ def atualizar(id, nome, numero, codEquipe):
   cur.execute("""
     UPDATE equipe
     SET nome=%s, numero=%s, codEquipe=%s
-    WHERE codEquipe=%s;
-  """, (nome,numero, codEquipe))
+    WHERE codPiloto=%s;
+  """, (nome,numero, codEquipe, id))
   conn.commit()
   cur.close()
   conn.close()

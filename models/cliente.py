@@ -25,7 +25,7 @@ def atualizar(id, nome, email, telefone):
   cur = conn.cursor()
   cur.execute("""
     UPDATE cliente
-    SET nome=%s, emailcliente=%s, telefonecliente=%s
+    SET nomeCliente=%s, emailCliente=%s, telefoneCliente=%s
     WHERE codCliente=%s;
   """, (nome, email, telefone, id))
   conn.commit()
