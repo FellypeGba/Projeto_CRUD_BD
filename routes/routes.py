@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
-from Projeto_CRUD_BD.db.connection import get_connection
+#from Projeto_CRUD_BD.db.connection import get_connection
+from db.connection import get_connection
 import psycopg2.extras
 
 # Uso do "blueprint" para agrupar todas as rotas
@@ -13,7 +14,7 @@ routes = Blueprint("routes", __name__)
 def criar_cliente():
     data = request.json
     query = """
-        INSERT INTO cliente (nomecliente, emailcliente, cpf, datanasc, telefonecliente)
+        INSERT INTO cliente (nomecliente, emailcliente, cpfCliente, datanasc, telefonecliente)
         VALUES (%s, %s, %s, %s, %s)
         RETURNING codcliente;
     """
@@ -22,7 +23,7 @@ def criar_cliente():
     cur.execute(query, (
         data["nomecliente"],
         data["emailcliente"],
-        data["cpf"],
+        data["cpfCliente"],
         data["datanasc"],
         data["telefonecliente"]
     ))
@@ -49,7 +50,7 @@ def atualizar_cliente(codcliente):
     data = request.json
     query = """
         UPDATE cliente
-        SET nomecliente=%s, emailcliente=%s, cpf=%s, datanasc=%s, telefonecliente=%s
+        SET nomecliente=%s, emailcliente=%s, cpfCliente=%s, datanasc=%s, telefonecliente=%s
         WHERE codcliente=%s;
     """
     conn = get_connection()
@@ -57,7 +58,7 @@ def atualizar_cliente(codcliente):
     cur.execute(query, (
         data["nomecliente"],
         data["emailcliente"],
-        data["cpf"],
+        data["cpfCliente"],
         data["datanasc"],
         data["telefonecliente"],
         codcliente

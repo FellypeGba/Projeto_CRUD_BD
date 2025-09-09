@@ -7,7 +7,7 @@ url = "http://127.0.0.1:5000/clientes"
 data = {
     "nomecliente": "Maria Souza",
     "emailcliente": "mariasouza@example.com",
-    "cpf": "12345678901",
+    "cpfCliente": "12345678901",
     "datanasc": "1990-05-20",
     "telefonecliente": "85999999999"
 }

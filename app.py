@@ -1,5 +1,6 @@
 from flask import Flask
-from routes import routes
+#from routes import routes
+from routes.routes import routes
 
 app = Flask(__name__)
 app.register_blueprint(routes)
