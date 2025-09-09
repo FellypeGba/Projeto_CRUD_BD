@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from db import get_connection
+from Projeto_CRUD_BD.db.connection import get_connection
 import psycopg2.extras
 
 # Uso do "blueprint" para agrupar todas as rotas
