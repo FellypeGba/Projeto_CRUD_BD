@@ -50,7 +50,7 @@ def atualizar_cliente(codcliente):
     data = request.json
     query = """
         UPDATE cliente
-        SET nomecliente=%s, emailcliente=%s, cpfCliente=%s, datanasc=%s, telefonecliente=%s
+        SET nomecliente=%s, emailcliente=%s, telefonecliente=%s
         WHERE codcliente=%s;
     """
     conn = get_connection()
@@ -58,8 +58,6 @@ def atualizar_cliente(codcliente):
     cur.execute(query, (
         data["nomecliente"],
         data["emailcliente"],
-        data["cpfCliente"],
-        data["datanasc"],
         data["telefonecliente"],
         codcliente
     ))

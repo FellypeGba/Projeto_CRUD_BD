@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 import models.piloto as model_piloto
 
-piloto_bp = Blueprint("equipe", __name__)
+piloto_bp = Blueprint("piloto", __name__)
 
 @piloto_bp.route("/pilotos", methods=["POST"])
 def inserir_piloto():

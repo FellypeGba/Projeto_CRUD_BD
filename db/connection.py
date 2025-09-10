@@ -4,7 +4,7 @@ import psycopg2.extras
 DB_CONFIG = {
   "dbname": "storeF1",
   "user": "postgres",
-  "password": "projetobd", 
+  "password": "senha", #projetobd
   "host": "localhost",
   "port": 5432
 }
