@@ -4,20 +4,18 @@ BASE_URL = "http://127.0.0.1:5000" #URL da aplicação
 
 ENTIDADES = {
     "clientes": ["nomecliente", "emailcliente", "cpfCliente", "datanasc", "telefonecliente"],
-    "equipes": ["nomeequipe"],
-    "pilotos": ["nomepiloto", "numero", "codequipe"],
-    "produtos": ["nomeprod", "descricao", "qtd", "valor", "ano_temporada", "codequipe", "codpiloto"],
-    "vendas": ["valorvenda", "statusvenda", "codcliente"],
-    "produtos-venda": ["codvenda", "codprod", "qtdvenda", "valorunitario"]
+    "equipes": ["nomeEquipe"],
+    "pilotos": ["nomePiloto", "numero", "codEquipe"],
+    "produtos": ["nomeProd", "descricao", "qtd", "valor", "ano_temporada", "codEquipe", "codPiloto"],
+    "vendas": ["dataVenda", "valorVenda", "statusVenda", "codCliente"],
+    "produtos-venda": ["codVenda", "codProd", "qtdVenda", "valorUnitario"]
 }
 
 ENTIDADES_EDITAR = {
     "clientes": ["nomecliente", "emailcliente", "telefonecliente"],
-    "equipes": ["nomeequipe"],
-    "pilotos": ["nomepiloto", "numero", "codequipe"],
-    "produtos": ["nomeprod", "descricao", "qtd", "valor", "ano_temporada", "codequipe", "codpiloto"],
-    "vendas": ["valorvenda", "statusvenda", "codcliente"],
-    "produtos-venda": ["codvenda", "codprod", "qtdvenda", "valorunitario"]
+    "equipes": ["nomeEquipe"],
+    "pilotos": ["nomePiloto", "numero", "codEquipe"],
+    "produtos": ["nomeProd", "descricao", "qtd", "valor", "ano_temporada", "codEquipe", "codPiloto"],
 }
 
 
@@ -45,10 +43,17 @@ def operacoesSimples(entidade):
     print(f"\n=== {entidade.upper()} ===")
     print("1. Listar")
     print("2. Inserir")
+    print("0. Voltar")
     return input("Escolha a operação: ")
 
 #mostra a entidade de forma mais apresentável
-def mostrarEntidade(lista):
+def mostrarEntidade(lista, entidade):
+    listaCampos = ENTIDADES[entidade]
+    cabecalho = ""
+    for campo in listaCampos:
+        cabecalho = cabecalho + "| " + campo + " "
+    print(f"Listando: {entidade}\n")
+    print(cabecalho)
     for elemento in lista:
         print(elemento)
 
@@ -59,7 +64,7 @@ def crudSimples(entidade):
         if op == "1":  # Listar
             r = requests.get(f"{BASE_URL}/{entidade}")
             retorno = (r.json())
-            mostrarEntidade(retorno)
+            mostrarEntidade(retorno, entidade)
 
         elif op == "2":  # Inserir
             dados = {}
@@ -81,7 +86,7 @@ def crud(entidade):
         if op == "1":  # Listar
             r = requests.get(f"{BASE_URL}/{entidade}")
             retorno = (r.json())
-            mostrarEntidade(retorno)
+            mostrarEntidade(retorno, entidade)
 
         elif op == "2":  # Inserir
             dados = {}

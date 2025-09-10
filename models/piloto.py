@@ -4,7 +4,7 @@ def inserir(nome, numero, codEquipe):
   conn = get_connection()
   cur = conn.cursor()
   cur.execute("""
-    INSERT INTO piloto (nome, numero, codEquipe)
+    INSERT INTO piloto (nomePiloto, numero, codEquipe)
     VALUES (%s, %s, %s)
   """, (nome, numero, codEquipe))
   conn.commit()
@@ -25,7 +25,7 @@ def atualizar(id, nome, numero, codEquipe):
   cur = conn.cursor()
   cur.execute("""
     UPDATE equipe
-    SET nome=%s, numero=%s, codEquipe=%s
+    SET nomePiloto=%s, numero=%s, codEquipe=%s
     WHERE codPiloto=%s;
   """, (nome,numero, codEquipe, id))
   conn.commit()

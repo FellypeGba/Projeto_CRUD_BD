@@ -26,3 +26,17 @@ def listar(codVenda):
   conn.close()
   return rows
 
+#função de listar todas as relações venda-produto
+def listarTudo():
+  conn = get_connection()
+  cur = conn.cursor()
+  cur.execute("""
+    SELECT P.nomeProd, PV.* FROM produtoVenda PV
+    INNER JOIN produto P
+    ON PV.codProd = P.codProd
+  """,)
+  rows = cur.fetchall()
+  cur.close()
+  conn.close()
+  return rows
+

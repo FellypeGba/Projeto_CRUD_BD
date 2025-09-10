@@ -1,6 +1,6 @@
 from db.connection import get_connection
 
-def criar(data, valor, codCliente, status):
+def criar(data, valor, status, codCliente):
   conn = get_connection()
   cur = conn.cursor()
   cur.execute("""

@@ -5,9 +5,10 @@ from routes.cliente_routes import cliente_bp
 from routes.equipe_routes import equipe_bp
 from routes.piloto_routes import piloto_bp
 from routes.produto_routes import produto_bp
+from routes.vendas_routes import venda_bp
 from routes.produtoVenda_routes import produto_venda_bp
 
-lista_registros = [cliente_bp, equipe_bp, piloto_bp, produto_bp, produto_venda_bp]
+lista_registros = [cliente_bp, equipe_bp, piloto_bp, produto_bp, venda_bp, produto_venda_bp]
 
 app = Flask(__name__)
 for registro in lista_registros:
