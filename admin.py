@@ -3,7 +3,7 @@ import requests
 BASE_URL = "http://127.0.0.1:5000" #URL da aplicação
 
 ENTIDADES = {
-    "clientes": ["nomecliente", "emailcliente", "cpfCliente", "datanasc", "telefonecliente"],
+    "clientes": ["nomeCliente", "emailCliente", "cpfCliente", "dataNasc", "telefoneC1liente"],
     "equipes": ["nomeEquipe"],
     "pilotos": ["nomePiloto", "numero", "codEquipe"],
     "produtos": ["nomeProd", "descricao", "qtd", "valor", "ano_temporada", "codEquipe", "codPiloto"],
@@ -12,7 +12,7 @@ ENTIDADES = {
 }
 
 ENTIDADES_EDITAR = {
-    "clientes": ["nomecliente", "emailcliente", "telefonecliente"],
+    "clientes": ["nomeCliente", "emailCliente", "telefoneCliente"],
     "equipes": ["nomeEquipe"],
     "pilotos": ["nomePiloto", "numero", "codEquipe"],
     "produtos": ["nomeProd", "descricao", "qtd", "valor", "ano_temporada", "codEquipe", "codPiloto"],
@@ -104,7 +104,7 @@ def crud(entidade):
             print(r.json())
 
         elif op == "4":  # Deletar
-            cod = input(f"ID do(a) {entidade[:-1]} a excluir: ")
+            cod = str(input(f"ID do(a) {entidade[:-1]} a excluir: "))
             r = requests.delete(f"{BASE_URL}/{entidade}/{cod}")
             print(r.json())
 
