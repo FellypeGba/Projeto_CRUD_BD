@@ -1,6 +1,7 @@
 from db.connection import get_connection
+import psycopg2.extras
 
-def inserir(codProd, codVenda, qtdVenda, valorUnd):
+def inserir(codVenda, codProd, qtdVenda, valorUnd):
   conn = get_connection()
   cur = conn.cursor()
   cur.execute("""
@@ -14,17 +15,17 @@ def inserir(codProd, codVenda, qtdVenda, valorUnd):
 # alterar para mostrar o nome do produto e data da compra tambem
 def listar(codVenda):
   conn = get_connection()
-  cur = conn.cursor()
+  cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
   cur.execute("""
-    SELECT P.nomeProduto, PV.* FROM produtoVenda PV
+    SELECT P.nomeProd, PV.qtdVenda, PV.valorUnitario FROM produtoVenda PV
     INNER JOIN produto P
     ON PV.codProd = P.codProd
     WHERE codVenda=%s;
-  """, (codVenda))
-  rows = cur.fetchall()
+  """, (codVenda,))
+  produtosVenda = [dict(row) for row in cur.fetchall()]
   cur.close()
   conn.close()
-  return rows
+  return produtosVenda
 
 #função de listar todas as relações venda-produto
 def listarTudo():

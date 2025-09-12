@@ -1,4 +1,5 @@
 from db.connection import get_connection
+import psycopg2.extras
 
 def inserir(nome, email, cpf, dataNasc, telefone):
   conn = get_connection()
@@ -13,12 +14,12 @@ def inserir(nome, email, cpf, dataNasc, telefone):
 
 def listar():
   conn = get_connection()
-  cur = conn.cursor()
+  cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
   cur.execute("SELECT * FROM cliente;")
-  rows = cur.fetchall()
+  clientes = [dict(row) for row in cur.fetchall()]
   cur.close()
   conn.close()
-  return rows
+  return clientes
 
 def atualizar(id, nome, email, telefone):
   conn = get_connection()
@@ -38,7 +39,7 @@ def deletar(id):
   cur.execute("""
     DELETE FROM cliente
     WHERE codCliente=%s
-  """, (id))
+  """, (id,))
   conn.commit()
   cur.close()
   conn.close()

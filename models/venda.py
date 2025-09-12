@@ -1,4 +1,5 @@
 from db.connection import get_connection
+import psycopg2.extras
 
 def criar(data, valor, status, codCliente):
   conn = get_connection()
@@ -6,19 +7,23 @@ def criar(data, valor, status, codCliente):
   cur.execute("""
     INSERT INTO venda (dataVenda, valorVenda, statusVenda, codCliente)
     VALUES (%s, %s, %s, %s)
+    RETURNING codVenda;
   """, (data, valor, status, codCliente))
+  novo_id = cur.fetchone()[0]
+
   conn.commit()
   cur.close()
   conn.close()
+  return novo_id
 
 def listar():
   conn = get_connection()
-  cur = conn.cursor()
+  cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
   cur.execute("SELECT * FROM venda;")
-  rows = cur.fetchall()
+  vendas = [dict(row) for row in cur.fetchall()]
   cur.close()
   conn.close()
-  return rows
+  return vendas
 
 #cancelar compra ?
 def deletar(id):
