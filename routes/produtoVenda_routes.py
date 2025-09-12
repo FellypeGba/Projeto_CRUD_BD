@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 import models.produtoVenda as model_produtoVenda
 
-produto_venda_bp = Blueprint("produtoVenda", __name__)
+produto_venda_bp = Blueprint("produtovenda", __name__)
 
 @produto_venda_bp.route("/produtos-venda", methods=["POST"])
 def inserir_vendaProduto():

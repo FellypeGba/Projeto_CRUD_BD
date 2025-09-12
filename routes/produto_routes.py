@@ -23,4 +23,4 @@ def atualizar_produto(codProd):
 @produto_bp.route("/produtos/<int:codProd>", methods=["DELETE"])
 def deletar_produto(codProd):
   model_produto.deletar(codProd)
-  return jsonify({"mensagem": f"Cliente {codProd} deletado com sucesso."})
+  return jsonify({"mensagem": f"Produto {codProd} deletado com sucesso."})

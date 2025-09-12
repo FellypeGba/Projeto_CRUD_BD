@@ -7,7 +7,7 @@ cliente_bp = Blueprint("cliente", __name__)
 def criar_cliente():
   data = request.json
   model_cliente.inserir(data["nomeCliente"], data["emailCliente"], data["cpfCliente"], data["dataNasc"], data["telefoneCliente"])
-  return jsonify({"message": "Produto criado com sucesso"})
+  return jsonify({"message": "Cliente criado com sucesso"})
 
 @cliente_bp.route("/clientes", methods=["GET"])
 def listar_clientes():
