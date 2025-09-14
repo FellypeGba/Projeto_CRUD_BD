@@ -8,7 +8,7 @@ cliente_bp = Blueprint("cliente", __name__)
 def criar_cliente():
   try:
     data = request.json
-    model_cliente.inserir(data["nomeCliente"], data["emailCliente"], data["cpfCliente"], data["dataNasc"], data["telefoneCliente"])
+    model_cliente.inserir(data["nomecliente"], data["emailcliente"], data["cpfcliente"], data["datanasc"], data["telefonecliente"])
     return jsonify({"message": "Cliente criado com sucesso"})
   
   except psycopg2.errors.UniqueViolation as e:
@@ -27,7 +27,8 @@ def listar_clientes():
 @cliente_bp.route("/clientes/<int:codCliente>", methods=["PUT"])
 def atualizar_cliente(codCliente):
   data = request.json
-  model_cliente.atualizar(codCliente, data["nomeCliente"], data["emailCliente"], data["telefoneCliente"])
+  print("Dados recebidos: ", data)
+  model_cliente.atualizar(codCliente, data["nomecliente"], data["emailcliente"], data["telefonecliente"])
   return jsonify({"message": f"Cliente {codCliente} atualizado com sucesso."})
 
 @cliente_bp.route("/clientes/<int:codCliente>", methods=["DELETE"])
@@ -42,12 +43,20 @@ def exibir_cliente(codCliente):
     return jsonify(cliente)
   else:
     return jsonify({"erro": "Cliente não encontrado"})
-  
+
 @cliente_bp.route("/clientes/busca", methods=["GET"])
-def buscar_cliente():
+def buscar_clientes():
   email = request.args.get('email')
-  cliente = model_cliente.buscaEmail(email)
-  if cliente:
-    return jsonify(cliente)
-  else:
-    return jsonify({"erro": "Cliente com este email não foi encontrado"})
+  nome = request.args.get('nome')
+
+  if email:
+    cliente = model_cliente.buscaEmail(email)
+    if cliente:
+      return jsonify(cliente)
+    else:
+      return jsonify({"erro": "Cliente com este email não foi encontrado"})
+
+  elif nome:
+    clientes = model_cliente.filtrarNome(nome)
+    return jsonify(clientes)
+  

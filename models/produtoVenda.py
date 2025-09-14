@@ -30,14 +30,14 @@ def listar(codVenda):
 #função de listar todas as relações venda-produto
 def listarTudo():
   conn = get_connection()
-  cur = conn.cursor()
+  cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
   cur.execute("""
     SELECT P.nomeProd, PV.* FROM produtoVenda PV
     INNER JOIN produto P
     ON PV.codProd = P.codProd
-  """,)
-  rows = cur.fetchall()
+  """)
+  produtosVenda = [dict(row) for row in cur.fetchall()]
   cur.close()
   conn.close()
-  return rows
+  return produtosVenda
 

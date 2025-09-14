@@ -6,7 +6,7 @@ produto_venda_bp = Blueprint("produtovenda", __name__)
 @produto_venda_bp.route("/produtos-venda", methods=["POST"])
 def inserir_vendaProduto():
   data = request.json
-  model_produtoVenda.inserir(data["codVenda"], data["codProd"], data["qtdVenda"], data["valorUnitario"])
+  model_produtoVenda.inserir(data["codvenda"], data["codprod"], data["qtdvenda"], data["valorunitario"])
   return jsonify({"message": "Produto adicionado a venda com sucesso."})
 
 @produto_venda_bp.route("/produtos-venda/", methods=["GET"])

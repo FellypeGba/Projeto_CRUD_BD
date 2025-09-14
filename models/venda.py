@@ -9,12 +9,12 @@ def criar(data, valor, status, codCliente):
     VALUES (%s, %s, %s, %s)
     RETURNING codVenda;
   """, (data, valor, status, codCliente))
-  novo_id = cur.fetchone()[0]
+  codVenda = cur.fetchone()[0]
 
   conn.commit()
   cur.close()
   conn.close()
-  return novo_id
+  return codVenda
 
 def listar():
   conn = get_connection()
@@ -36,3 +36,26 @@ def deletar(id):
   conn.commit()
   cur.close()
   conn.close()
+
+def gerar_relatorio():
+  conn = get_connection()
+  cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+  cur.execute("""
+    SELECT
+      COUNT(*) AS total_vendas,
+      SUM(valorVenda) AS valor_total,
+      AVG(valorVenda) AS valor_medio,
+      MAX(valorVenda) AS maior_venda,
+      MIN(valorVenda) AS menor_venda
+    FROM venda;
+  """)
+  
+  # fetchone() é usado porque a consulta retorna apenas uma linha com o resumo
+  relatorio = cur.fetchone()
+  
+  cur.close()
+  conn.close()
+  
+  # Converte o resultado para um dicionário Python padrão
+  return dict(relatorio) if relatorio else None

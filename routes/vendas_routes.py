@@ -6,13 +6,18 @@ venda_bp = Blueprint("venda", __name__)
 @venda_bp.route("/vendas", methods=["POST"])
 def criar_venda():
   data = request.json
-  codVenda = model_venda.criar(data["dataVenda"], data["valorVenda"], data["statusVenda"], data["codCliente"])
+  codVenda = model_venda.criar(data["datavenda"], data["valorvenda"], data["statusvenda"], data["codcliente"])
   return jsonify({"message": "Venda criada com sucesso", "codVenda": codVenda})
 
 @venda_bp.route("/vendas", methods=["GET"])
 def listar_vendas():
   vendas = model_venda.listar()
   return jsonify(vendas)
+
+@venda_bp.route("/vendas/relatorio", methods=["GET"])
+def relatorio_vendas():
+  relatorio = model_venda.gerar_relatorio()
+  return jsonify(relatorio)
 
 
 #Opcional: Deletar venda

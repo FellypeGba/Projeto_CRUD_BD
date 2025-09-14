@@ -42,11 +42,11 @@ def cadastrarCliente():
   limparTela()
   print("--- Cadastro de Novo Cliente ---")
   dados_cliente = {
-    "nomeCliente": input("Nome completo: "),
-    "emailCliente": input("Email: "),
-    "cpfCliente": input("CPF (apenas números): "),
-    "dataNasc": input("Data de Nascimento: "),
-    "telefoneCliente": input("Telefone (opcional): ")
+    "nomecliente": input("Nome completo: "),
+    "emailcliente": input("Email: "),
+    "cpfcliente": input("CPF (apenas números): "),
+    "datanasc": input("Data de Nascimento: "),
+    "telefonecliente": input("Telefone (opcional): ")
   }
   
   sucesso, resposta = handle_request("POST", f"{BASE_URL}/clientes", json=dados_cliente)
@@ -124,10 +124,10 @@ def realizarCompra(cliente):
       continue
     
     carrinho.append({
-      "codProd": produtoSelecionado["codprod"],
-      "nomeProd": produtoSelecionado["nomeprod"],
-      "qtdVenda": qtd,
-      "valorUnitario": float(produtoSelecionado["valor"])
+      "codprod": produtoSelecionado["codprod"],
+      "nomeprod": produtoSelecionado["nomeprod"],
+      "qtdvenda": qtd,
+      "valorunitario": float(produtoSelecionado["valor"])
     })
     totalVenda += qtd * float(produtoSelecionado["valor"])
     print(f"'{produtoSelecionado['nomeprod']}' adicionado. Total parcial: R$ {totalVenda:.2f}")
@@ -147,10 +147,10 @@ def realizarCompra(cliente):
   
   # Cria a venda 
   dadosVenda = {
-    "dataVenda": datetime.now().isoformat(),
-    "valorVenda": totalVenda,
-    "statusVenda": "Processando",
-    "codCliente": cliente["codcliente"]
+    "datavenda": datetime.now().isoformat(),
+    "valorvenda": totalVenda,
+    "statusvenda": "Processando",
+    "codcliente": cliente["codcliente"]
   }
   sucessoVenda, respVenda = handle_request("POST", f"{BASE_URL}/vendas", json=dadosVenda)
 
@@ -166,10 +166,10 @@ def realizarCompra(cliente):
   erros = 0
   for item in carrinho:
     dadosProdutoVenda = {
-      "codVenda": codVenda,
-      "codProd": item["codProd"],
-      "qtdVenda": item["qtdVenda"],
-      "valorUnitario": item["valorUnitario"]
+      "codvenda": codVenda,
+      "codprod": item["codprod"],
+      "qtdvenda": item["qtdvenda"],
+      "valorunitario": item["valorunitario"]
     }
     sucessoItem, respItem = handle_request("POST", f"{BASE_URL}/produtos-venda", json=dadosProdutoVenda)
     if not sucessoItem:
@@ -251,7 +251,7 @@ def main():
     elif escolha == "2":
       cadastrarCliente()
     elif escolha == "0":
-      print("Até logo!")
+      print("\nSaindo... Até logo!")
       break
     else:
       print("Opção inválida!")

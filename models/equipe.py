@@ -43,3 +43,18 @@ def deletar(id):
   conn.commit()
   cur.close()
   conn.close()
+
+def filtrarNome(nome):
+  conn = get_connection()
+  cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+  buscaNome = f"%{nome}%"
+  cur.execute("""
+    SELECT * FROM equipe
+    WHERE nomeEquipe ILIKE (%s);
+  """, (buscaNome,))
+
+  equipes = [dict(row) for row in cur.fetchall()]
+  conn.commit()
+  cur.close()
+  conn.close()
+  return equipes
