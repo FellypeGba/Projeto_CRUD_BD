@@ -16,7 +16,7 @@ def handle_request(method, url, **kwargs):
     response.raise_for_status()
     return True, response.json()
   except Exception as e:
-    return False, f"Erro ao realizar a operação."
+    return False, f"Erro ao realizar a operação. Tente novamente."
 
 def mostrarTabela(dados, colunas):
   if not isinstance(dados, list): dados = [dados]
@@ -59,19 +59,29 @@ def loginCliente():
   print("--- Login ---")
   email = input("Digite seu email para identificação: ")
 
-  sucesso, clientes = handle_request("GET", f"{BASE_URL}/clientes")
-  if sucesso:
-    for cliente in clientes:
-      if cliente.get("emailcliente") == email:
-        print(f"\nBem-vindo(a), {cliente.get('nomecliente')}!")
-        input("Pressione Enter para continuar...")
-        return cliente
-    print("\nCliente não encontrado.")
-  else:
-      print(f"\nErro ao buscar clientes: {clientes}")
+  sucesso, cliente = handle_request("GET", f"{BASE_URL}/clientes/busca?email={email}")
 
-  input("\nPressione Enter para continuar...")
-  return None
+  if sucesso:
+    print(f"Bem-vindo(a), {cliente.get('nomecliente')}!")
+    input("Pressione Enter para continuar...")
+    return cliente
+  print("Cliente não encontrado.")
+  input("Pressione Enter para continuar...")
+
+def filtrarProdutos():
+  print("\n--- Consulta de Produtos ---")
+
+  while True:
+    nomeProd = input("\nDigite o nome para filtar (0 para sair): ")
+    if nomeProd == '0':
+      break;
+    sucesso, produtos = handle_request("GET", f"{BASE_URL}/produtos/busca?nome={nomeProd}")
+    if sucesso and produtos:
+      mostrarTabela(produtos, ["codprod", "nomeprod", "descricao", "valor", "qtd"])
+    elif sucesso and not produtos:
+      print("\nNenhum produto encontrado com este termo.")
+    else:
+      print(f"\nErro ao buscar produtos: {produtos}")
 
 def listarProdutos():
   sucesso, produtos = handle_request("GET", f"{BASE_URL}/produtos")
@@ -95,7 +105,7 @@ def realizarCompra(cliente):
 
   while True:
     codProd = input("\nDigite o ID do produto para adicionar ao carrinho (ou '0' para finalizar): ")
-    if codProd == 0:
+    if codProd == "0":
       break
     
     produtoSelecionado = next((p for p in produtosDisponiveis if str(p.get("codprod")) == codProd), None)
@@ -200,9 +210,10 @@ def menuCliente(cliente):
   while True:
     limparTela()
     print(f"Olá, {cliente['nomecliente']}! O que deseja fazer?")
-    print("1. Ver produtos")
-    print("2. Realizar nova compra")
-    print("3. Ver minhas compras")
+    print("1. Ver todos os produtos")
+    print("2. Buscar produto")
+    print("3. Realizar nova compra")
+    print("4. Ver minhas compras")
     print("0. Sair")
 
     escolha = input("Sua escolha: ")
@@ -212,8 +223,10 @@ def menuCliente(cliente):
       listarProdutos()
       input("\nPressione Enter para voltar...")
     elif escolha == "2":
-      realizarCompra(cliente)
+      filtrarProdutos()
     elif escolha == "3":
+      realizarCompra(cliente)
+    elif escolha == "4":
       verCompras(cliente)
     elif escolha == "0":
       break
@@ -221,27 +234,27 @@ def menuCliente(cliente):
       print("Opção inválida!")
 
 def main():
-    cliente = None
-    while True:
-      limparTela()
-      print("--- BEM-VINDO À F1 STORE ---")
-      print("1. Login")
-      print("2. Cadastrar")
-      print("0. Sair")
-      
-      escolha = input("Sua escolha: ")
+  cliente = None
+  while True:
+    limparTela()
+    print("--- BEM-VINDO À F1 STORE ---")
+    print("1. Login")
+    print("2. Cadastrar")
+    print("0. Sair")
+    
+    escolha = input("Sua escolha: ")
 
-      if escolha == "1":
-        cliente = loginCliente()
-        if cliente:
-          menuCliente(cliente)
-      elif escolha == "2":
-        cadastrarCliente()
-      elif escolha == "0":
-        print("Até logo!")
-        break
-      else:
-        print("Opção inválida!")
+    if escolha == "1":
+      cliente = loginCliente()
+      if cliente:
+        menuCliente(cliente)
+    elif escolha == "2":
+      cadastrarCliente()
+    elif escolha == "0":
+      print("Até logo!")
+      break
+    else:
+      print("Opção inválida!")
 
 if __name__ == "__main__":
-    main()
+  main()

@@ -24,3 +24,9 @@ def atualizar_produto(codProd):
 def deletar_produto(codProd):
   model_produto.deletar(codProd)
   return jsonify({"mensagem": f"Produto {codProd} deletado com sucesso."})
+
+@produto_bp.route("/produtos/busca", methods=["GET"])
+def buscar_produto():
+  nomeProd = request.args.get('nome')
+  produtos = model_produto.filtrarNome(nomeProd) or ""
+  return jsonify(produtos)

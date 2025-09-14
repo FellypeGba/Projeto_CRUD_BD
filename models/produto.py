@@ -33,6 +33,21 @@ def atualizar(id, nome, descricao, qtd, valor, ano, codEquipe, codPiloto):
   cur.close()
   conn.close()
 
+def filtrarNome(nome):
+  conn = get_connection()
+  cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+  buscaNome = f"%{nome}%"
+  cur.execute("""
+    SELECT * FROM produto
+    WHERE nomeProd ILIKE (%s);
+  """, (buscaNome,))
+
+  produtos = [dict(row) for row in cur.fetchall()]
+  conn.commit()
+  cur.close()
+  conn.close()
+  return produtos
+
 def deletar(id):
   conn = get_connection()
   cur = conn.cursor()

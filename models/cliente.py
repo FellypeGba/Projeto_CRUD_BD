@@ -21,6 +21,24 @@ def listar():
   conn.close()
   return clientes
 
+def exibirUm(id):
+  conn = get_connection()
+  cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+  cur.execute("SELECT * FROM cliente WHERE codCliente =%s;", (id,))
+  cliente = cur.fetchone()
+  cur.close()
+  conn.close()
+  return dict(cliente)
+
+def buscaEmail(email):
+  conn = get_connection()
+  cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+  cur.execute("SELECT * FROM cliente WHERE emailCliente = %s;", (email,))
+  cliente = cur.fetchone()
+  cur.close()
+  conn.close()
+  return dict(cliente)
+
 def atualizar(id, nome, email, telefone):
   conn = get_connection()
   cur = conn.cursor()
