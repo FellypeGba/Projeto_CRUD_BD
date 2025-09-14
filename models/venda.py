@@ -50,12 +50,7 @@ def gerar_relatorio():
       MIN(valorVenda) AS menor_venda
     FROM venda;
   """)
-  
-  # fetchone() é usado porque a consulta retorna apenas uma linha com o resumo
   relatorio = cur.fetchone()
-  
   cur.close()
   conn.close()
-  
-  # Converte o resultado para um dicionário Python padrão
   return dict(relatorio) if relatorio else None
