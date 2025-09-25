@@ -54,6 +54,22 @@ def cadastrarCliente():
   input("\nPressione Enter para continuar...")
   return sucesso
 
+#Função para o cliente checar os dados cadastrados dele:
+def mostrarCliente(cliente):
+  print("\n\nExibindo Informações Cadastradas")
+  sucesso, dados = handle_request("GET", f"{BASE_URL}/clientes/{cliente['codcliente']}")
+  colunas_cliente = [
+    "cpfcliente",
+    "nomecliente",
+    "emailcliente",
+    "datanasc",
+    "telefonecliente"
+  ]
+  if sucesso and dados:
+    mostrarTabela(dados, colunas_cliente)
+
+  input("\nPressione Enter para continuar...")
+
 def loginCliente():
   limparTela()
   print("--- Login ---")
@@ -161,7 +177,7 @@ def realizarCompra(cliente):
   
   codVenda = respVenda.get("codVenda")
 
-  # Adicona os produtos a venda
+  # Adicionando os produtos a venda
   print("Adicionando produtos ao pedido...")
   erros = 0
   for item in carrinho:
@@ -214,6 +230,7 @@ def menuCliente(cliente):
     print("2. Buscar produto")
     print("3. Realizar nova compra")
     print("4. Ver minhas compras")
+    print("5. Ver minhas informações")
     print("0. Sair")
 
     escolha = input("Sua escolha: ")
@@ -228,6 +245,8 @@ def menuCliente(cliente):
       realizarCompra(cliente)
     elif escolha == "4":
       verCompras(cliente)
+    elif escolha == "5":
+      mostrarCliente(cliente)
     elif escolha == "0":
       break
     else:
