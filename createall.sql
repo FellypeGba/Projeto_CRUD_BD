@@ -46,10 +46,13 @@ CREATE TABLE IF NOT EXISTS venda (
   codVenda serial NOT NULL,
   dataVenda timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
   valorVenda numeric(10, 2) NOT NULL,
-  statusVenda character varying(30) DEFAULT 'Processando',
+  codStatus INTEGER NOT NULL DEFAULT 1,,
   codCliente integer NOT NULL,
+  codVendedor INTEGER NOT NULL,
   PRIMARY KEY (codVenda),
-	FOREIGN KEY (codCliente) REFERENCES cliente(codCliente)
+	FOREIGN KEY (codCliente) REFERENCES cliente(codCliente),
+  FOREIGN KEY (codVendedor) REFERENCES vendedor(codVendedor),
+  FOREIGN KEY (codStatus) REFERENCES statusVenda(codStatus)
 );
 
 CREATE TABLE IF NOT EXISTS produtoVenda (
@@ -60,5 +63,18 @@ CREATE TABLE IF NOT EXISTS produtoVenda (
   PRIMARY KEY (codVenda, codProd),
   FOREIGN KEY (codVenda) REFERENCES venda(codVenda),
   FOREIGN KEY (codProd) REFERENCES produto(codProd)
+);
+
+CREATE TABLE IF NOT EXISTS vendedor (
+  codVendedor SERIAL PRIMARY KEY,
+  nomeVendedor VARCHAR(100) NOT NULL,
+  emailVendedor VARCHAR(100) UNIQUE NOT NULL,
+  dataNasc date NOT NULL,
+  telefoneVendedor character(11)
+);
+
+CREATE TABLE IF NOT EXISTS statusVenda (
+  codStatus SERIAL PRIMARY KEY,
+  nomeStatus VARCHAR(30) UNIQUE NOT NULL
 );
 

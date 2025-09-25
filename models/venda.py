@@ -1,20 +1,19 @@
 from db.connection import get_connection
 import psycopg2.extras
 
-def criar(data, valor, status, codCliente):
-  conn = get_connection()
-  cur = conn.cursor()
-  cur.execute("""
-    INSERT INTO venda (dataVenda, valorVenda, statusVenda, codCliente)
-    VALUES (%s, %s, %s, %s)
-    RETURNING codVenda;
-  """, (data, valor, status, codCliente))
-  codVenda = cur.fetchone()[0]
-
-  conn.commit()
-  cur.close()
-  conn.close()
-  return codVenda
+def criar(data, valor, status, codCliente, codVendedor):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        INSERT INTO venda (dataVenda, valorVenda, codStatus, codCliente, codVendedor)
+        VALUES (%s, %s, %s, %s, %s)
+        RETURNING codVenda;
+    """, (data, valor, status, codCliente, codVendedor))
+    codVenda = cur.fetchone()[0]
+    conn.commit()
+    cur.close()
+    conn.close()
+    return codVenda
 
 def listar():
   conn = get_connection()

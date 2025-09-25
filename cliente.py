@@ -108,6 +108,19 @@ def listarProdutos():
     print(f"\nErro ao buscar produtos: {produtos}")
     return []
 
+def escolherVendedor():
+  sucesso, vendedores = handle_request("GET", f"{BASE_URL}/vendedores")
+  if not sucesso or not vendedores:
+    print("Nenhum vendedor disponível.")
+    return None
+  print("\n--- Vendedores Disponíveis ---")
+  mostrarTabela(vendedores, ["codvendedor", "nomevendedor", "emailvendedor"])
+  while True:
+    cod = input("Digite o código do vendedor para esta venda: ")
+    if any(str(v["codvendedor"]) == cod for v in vendedores):
+      return int(cod)
+    print("Código inválido. Tente novamente.")
+
 def realizarCompra(cliente):
   limparTela()
   print("--- Vitrine de Produtos ---")
@@ -162,11 +175,18 @@ def realizarCompra(cliente):
     return
   
   # Cria a venda 
+  codVendedor = escolherVendedor()
+  if not codVendedor:
+    print("Compra cancelada por falta de vendedor.")
+    input("\nPressione Enter para continuar...")
+    return
+
   dadosVenda = {
     "datavenda": datetime.now().isoformat(),
     "valorvenda": totalVenda,
-    "statusvenda": "Processando",
-    "codcliente": cliente["codcliente"]
+    "codstatus": 1,  # 1 = Processando (ajuste conforme necessário)
+    "codcliente": cliente["codcliente"],
+    "codvendedor": codVendedor
   }
   sucessoVenda, respVenda = handle_request("POST", f"{BASE_URL}/vendas", json=dadosVenda)
 
@@ -209,7 +229,7 @@ def verCompras(cliente):
   if not minhasVendas:
     print("Você ainda não fez nenhuma compra.")
   else:
-    mostrarTabela(minhasVendas, ["codvenda", "datavenda", "valorvenda", "statusvenda"])
+    mostrarTabela(minhasVendas, ["codvenda", "datavenda", "valorvenda", "codstatus", "codvendedor"])
     
     codVenda_detalhes = input("\nDigite o ID da venda para ver os detalhes (ou Enter para voltar): ")
     if codVenda_detalhes.isdigit():

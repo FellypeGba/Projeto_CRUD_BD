@@ -8,8 +8,9 @@ ENTIDADES = {
   "equipes": ["codequipe","nomeequipe"],
   "pilotos": ["codpiloto", "nomepiloto", "numero", "codequipe"],
   "produtos": ["codprod","nomeprod", "descricao", "qtd", "valor", "ano_temporada", "codequipe", "codpiloto"],
-  "vendas": ["codvenda", "datavenda", "valorvenda", "statusvenda", "codcliente"],
-  "produtos-venda": ["nomeprod" ,"codvenda", "codprod", "qtdvenda", "valorunitario"]
+  "vendas": ["codvenda", "datavenda", "valorvenda", "codstatus", "codcliente", "codvendedor"],
+  "produtos-venda": ["nomeprod" ,"codvenda", "codprod", "qtdvenda", "valorunitario"],
+  "vendedores": ["codvendedor", "nomevendedor", "emailvendedor", "datanasc", "telefonevendedor"]
 }
 
 ENTIDADES_EDITAR = {
@@ -17,13 +18,15 @@ ENTIDADES_EDITAR = {
   "equipes": ["nomeequipe"],
   "pilotos": ["nomepiloto", "numero", "codequipe"],
   "produtos": ["nomeprod", "descricao", "qtd", "valor", "ano_temporada", "codequipe", "codpiloto"],
+  "vendedores": ["nomevendedor", "emailvendedor", "datanasc", "telefonevendedor"]
 }
 
 ENTIDADES_BUSCAR = {
   "clientes": "nomecliente",
   "equipes": "nomeequipe",
   "pilotos": "nomepiloto",
-  "produtos": "nomeprod"
+  "produtos": "nomeprod",
+  "vendedores": "nomevendedor"
 }
 
 def limparTela():
@@ -48,6 +51,7 @@ def menu():
   print("4. Gerenciar Produtos")
   print("5. Gerenciar Vendas")
   print("6. Gerenciar Produtos da Venda")
+  print("7. Gerenciar Vendedores")
   print("0. Sair")
   return input("Escolha a entidade: ")
 
@@ -211,6 +215,8 @@ def main():
       crudSimples("vendas")
     elif escolha == "6":
       crudSimples("produtos-venda")
+    elif escolha == "7":
+      crud("vendedores")
     elif escolha == "0":
       print("\nSaindo... Até logo!")
       break
