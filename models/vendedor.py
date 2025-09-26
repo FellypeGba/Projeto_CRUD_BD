@@ -25,3 +25,14 @@ def listar():
     cur.close()
     conn.close()
     return vendedores
+
+#filtrar vendedor por nome
+def filtrarNome(nome):
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    busca = f"%{nome}%"
+    cur.execute("SELECT * FROM vendedor WHERE nomeVendedor ILIKE %s;", (busca,))
+    vendedores = [dict(row) for row in cur.fetchall()]
+    cur.close()
+    conn.close()
+    return vendedores

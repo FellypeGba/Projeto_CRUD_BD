@@ -8,8 +8,12 @@ from routes.produto_routes import produto_bp
 from routes.vendas_routes import venda_bp
 from routes.produtoVenda_routes import produto_venda_bp
 from routes.vendedor_routes import vendedor_bp
+from routes.fabricante_routes import fabricante_bp
 
-lista_registros = [cliente_bp, equipe_bp, piloto_bp, produto_bp, venda_bp, produto_venda_bp, vendedor_bp]
+lista_registros = [
+    cliente_bp, equipe_bp, piloto_bp, produto_bp, venda_bp,
+    produto_venda_bp, vendedor_bp, fabricante_bp
+]
 
 app = Flask(__name__)
 for registro in lista_registros:
