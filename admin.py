@@ -11,10 +11,11 @@ ENTIDADES = {
     "codprod", "nomeprod", "descricao", "qtd", "valor", "ano_temporada",
     "categoria", "codequipe", "codpiloto", "codfabricante"
   ],
-  "vendas": ["codvenda", "datavenda", "valorvenda", "codstatus", "codcliente", "codvendedor"],
+  "vendas": ["codvenda", "datavenda", "valorvenda", "codpagamaneto", "statuspagamento", "codcliente", "codvendedor"],
   "produtos-venda": ["nomeprod" ,"codvenda", "codprod", "qtdvenda", "valorunitario"],
   "vendedores": ["codvendedor", "nomevendedor", "emailvendedor", "datanasc", "telefonevendedor"],
-  "fabricantes": ["codfabricante", "nomefabricante", "cidadefabricante"]
+  "fabricantes": ["codfabricante", "nomefabricante", "cidadefabricante"],
+  "pagamentos": ["codpagamaneto", "nomepagamento"]
 }
 
 ENTIDADES_EDITAR = {
@@ -23,7 +24,8 @@ ENTIDADES_EDITAR = {
   "pilotos": ["nomepiloto", "numero", "codequipe"],
   "produtos": ["nomeprod", "descricao", "qtd", "valor", "ano_temporada", "codequipe", "codpiloto"],
   "vendedores": ["nomevendedor", "emailvendedor", "datanasc", "telefonevendedor"],
-  "fabricantes": ["nomefabricante", "cidadefabricante"]
+  "fabricantes": ["nomefabricante", "cidadefabricante"],
+  "pagamentos": ["nomepagamento"]
 }
 
 ENTIDADES_BUSCAR = {
@@ -59,6 +61,7 @@ def menu():
   print("6. Gerenciar Produtos da Venda")
   print("7. Gerenciar Vendedores")
   print("8. Gerenciar Fabricantes")
+  print("9. Gerenciar Formas de Pagamento") 
   print("0. Sair")
   return input("Escolha a entidade: ")
 
@@ -105,7 +108,6 @@ def mostrarTabela(dados, colunas):
 def listar(entidade):
   sucesso, dados = handle_request("GET", f"{BASE_URL}/{entidade}")
   if sucesso and dados:
-    # Em produtos, o campo codfabricante é mostrado como nome do fabricante
     if entidade == "produtos":
       colunas = [c if c != "codfabricante" else "fabricante" for c in ENTIDADES[entidade]]
       mostrarTabela(dados, colunas)
@@ -231,6 +233,8 @@ def main():
       crud("vendedores")
     elif escolha == "8":
       crud("fabricantes")
+    elif escolha == "9":
+      crudSimples("pagamentos")
     elif escolha == "0":
       print("\nSaindo... Até logo!")
       break

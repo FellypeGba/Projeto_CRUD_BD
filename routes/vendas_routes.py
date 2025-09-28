@@ -9,9 +9,10 @@ def criar_venda():
   codVenda = model_venda.criar(
     data["datavenda"],
     data["valorvenda"],
-    data["codstatus"],    # <-- Corrigido aqui
+    data["codpagamento"],
     data["codcliente"],
-    data["codvendedor"]
+    data["codvendedor"],
+    data.get("statuspagamento")
   )
   return jsonify({"message": "Venda criada com sucesso", "codVenda": codVenda})
 

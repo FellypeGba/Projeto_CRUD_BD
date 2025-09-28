@@ -1,24 +1,39 @@
 from db.connection import get_connection
 import psycopg2.extras
 
-def criar(data, valor, status, codCliente, codVendedor):
-    conn = get_connection()
-    cur = conn.cursor()
-    cur.execute("""
-        INSERT INTO venda (dataVenda, valorVenda, codStatus, codCliente, codVendedor)
-        VALUES (%s, %s, %s, %s, %s)
-        RETURNING codVenda;
-    """, (data, valor, status, codCliente, codVendedor))
-    codVenda = cur.fetchone()[0]
-    conn.commit()
-    cur.close()
-    conn.close()
-    return codVenda
+def criar(data, valor, status, codCliente, codVendedor, statusPagamento=None):
+  conn = get_connection()
+  cur = conn.cursor()
+  cur.execute("""
+      INSERT INTO venda (dataVenda, valorVenda, codPagamaneto, codCliente, codVendedor, statusPagamento)
+      VALUES (%s, %s, %s, %s, %s, %s)
+      RETURNING codVenda;
+  """, (data, valor, status, codCliente, codVendedor, statusPagamento))
+  codVenda = cur.fetchone()[0]
+  conn.commit()
+  cur.close()
+  conn.close()
+  return codVenda
 
 def listar():
   conn = get_connection()
   cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-  cur.execute("SELECT * FROM venda;")
+  cur.execute("""
+    SELECT
+        v.codvenda,
+        v.datavenda,
+        v.valorvenda,
+        v.statuspagamento,
+        v.codcliente,
+        p.nomepagamento,
+        ve.nomevendedor
+    FROM
+        venda v
+    JOIN
+        pagamento p ON v.codpagamaneto = p.codpagamaneto
+    JOIN
+        vendedor ve ON v.codvendedor = ve.codvendedor;
+  """)
   vendas = [dict(row) for row in cur.fetchall()]
   cur.close()
   conn.close()

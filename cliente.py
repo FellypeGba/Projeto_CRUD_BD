@@ -59,7 +59,7 @@ def cadastrarCliente():
 
 #Função para o cliente checar os dados cadastrados dele:
 def mostrarCliente(cliente):
-  print("\n\nExibindo Informações Cadastradas")
+  print("\n\nExibindo Informações Cadastradas...\n")
   sucesso, dados = handle_request("GET", f"{BASE_URL}/clientes/{cliente['codcliente']}")
   colunas_cliente = [
     "cpfcliente",
@@ -122,9 +122,29 @@ def escolherVendedor():
   print("\n--- Vendedores Disponíveis ---")
   mostrarTabela(vendedores, ["codvendedor", "nomevendedor", "emailvendedor"])
   while True:
-    cod = input("Digite o código do vendedor para esta venda: ")
+    cod = input("\nDigite o código do vendedor para esta venda: ")
     if any(str(v["codvendedor"]) == cod for v in vendedores):
       return int(cod)
+    print("Código inválido. Tente novamente.")
+
+def escolherFormaPagamento():
+  sucesso, pagamentos = handle_request("GET", f"{BASE_URL}/pagamentos")
+  if not sucesso or not pagamentos:
+    print("Nenhuma forma de pagamento disponível.")
+    return None, None
+  
+  print("\n--- Formas de Pagamento ---")
+  mostrarTabela(pagamentos, ["codpagamaneto", "nomepagamento"])
+  
+  while True:
+    cod = input("\nDigite o código da forma de pagamento: ")
+    pagamento_selecionado = next((p for p in pagamentos if str(p["codpagamaneto"]) == cod), None)
+    
+    if pagamento_selecionado:
+      nome_pagamento = pagamento_selecionado["nomepagamento"].lower()
+      status_inicial = 'Pendente' if any(keyword in nome_pagamento for keyword in ['pix', 'boleto', 'cartão']) else None
+      return int(cod), status_inicial
+    
     print("Código inválido. Tente novamente.")
 
 def realizarCompra(cliente):
@@ -172,9 +192,23 @@ def realizarCompra(cliente):
     input("\nPressione Enter para continuar...")
     return
   
+  desconto = False
+  valorFinal = totalVenda
+
+  if (cliente.get('timeamado', '').lower() == 'flamengo' or 
+      cliente.get('onepiece') == True or 
+      cliente.get('cidade', '').lower() == 'sousa'):
+    desconto = True
+    valorFinal = totalVenda * 0.90 # Aplica desconto de 10%
+    print("\nParabéns! Você é elegível para um desconto especial de 10%!\n")
+  
   # Finalizar a venda
   print("\n--- Finalizando Compra ---")
-  confirmacao = input(f"O total da sua compra é R$ {totalVenda:.2f}. Confirmar compra? (S/N): ")
+  if desconto:
+    print(f"Valor original: R$ {totalVenda:.2f}")
+    print(f"Valor com desconto: R$ {valorFinal:.2f}")
+
+  confirmacao = input(f"\nO total da sua compra é R$ {valorFinal:.2f}. Confirmar compra? (S/N): ")
   if confirmacao.lower() != 's':
     print("Compra cancelada.")
     input("\nPressione Enter para continuar...")
@@ -186,13 +220,21 @@ def realizarCompra(cliente):
     print("Compra cancelada por falta de vendedor.")
     input("\nPressione Enter para continuar...")
     return
+  
+  # Tipo de pagamento
+  codPagamento, statusPagamento = escolherFormaPagamento()
+  if not codPagamento:
+    print("Compra cancelada por falta de forma de pagamento.")
+    input("\nPressione Enter para continuar...")
+    return
 
   dadosVenda = {
     "datavenda": datetime.now().isoformat(),
     "valorvenda": totalVenda,
-    "codstatus": 1,  # 1 = Processando (ajuste conforme necessário)
+    "codpagamento": codPagamento,
     "codcliente": cliente["codcliente"],
-    "codvendedor": codVendedor
+    "codvendedor": codVendedor,
+    "statuspagamento": statusPagamento
   }
   sucessoVenda, respVenda = handle_request("POST", f"{BASE_URL}/vendas", json=dadosVenda)
 
@@ -235,7 +277,7 @@ def verCompras(cliente):
   if not minhasVendas:
     print("Você ainda não fez nenhuma compra.")
   else:
-    mostrarTabela(minhasVendas, ["codvenda", "datavenda", "valorvenda", "codstatus", "codvendedor"])
+    mostrarTabela(minhasVendas, ["codvenda", "datavenda", "valorvenda", "nomepagamento", "statuspagamento", "nomevendedor"])
     
     codVenda_detalhes = input("\nDigite o ID da venda para ver os detalhes (ou Enter para voltar): ")
     if codVenda_detalhes.isdigit():
