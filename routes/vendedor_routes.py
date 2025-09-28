@@ -33,6 +33,11 @@ def atualizar_vendedor(id):
         return jsonify({"message": "Vendedor atualizado com sucesso"})
     return jsonify({"message": "Vendedor não encontrado"}), 404
 
+@vendedor_bp.route("/vendedores/busca", methods=["GET"])
+def buscar_vendedores():
+    nome = request.args.get("nome", "")
+    resultado = model_vendedor.filtrarNome(nome)
+    return jsonify(resultado)
 
 ## Deletar vendedor ??
 @vendedor_bp.route("/vendedores/<int:id>", methods=["DELETE"])

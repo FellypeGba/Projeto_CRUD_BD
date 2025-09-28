@@ -1,13 +1,13 @@
 from db.connection import get_connection
 import psycopg2.extras
 
-def inserir(nome, email, cpf, dataNasc, telefone):
+def inserir(nome, email, cpf, dataNasc, telefone, timeAmado, onePiece, cidade):
   conn = get_connection()
   cur = conn.cursor()
   cur.execute("""
-    INSERT INTO cliente (nomeCliente, emailCliente, cpfCliente, dataNasc, telefoneCliente)
-    VALUES (%s, %s, %s, %s, %s)
-  """, (nome, email, cpf, dataNasc, telefone))
+      INSERT INTO cliente (nomeCliente, emailCliente, cpfCliente, dataNasc, telefoneCliente, timeAmado, onePiece, cidade)
+      VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+    """, (nome, email, cpf, dataNasc, telefone, timeAmado, onePiece, cidade))
   conn.commit()
   cur.close()
   conn.close()

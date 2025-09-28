@@ -4,12 +4,15 @@ CREATE DATABASE IF NOT EXISTS storeF1;
 -- Tabelas
 
 CREATE TABLE IF NOT EXISTS cliente (
-  codCliente seriaL NOT NULL,
+  codCliente serial NOT NULL,
   nomeCliente character varying(80) NOT NULL,
   emailCliente character varying(80) UNIQUE NOT NULL,
   cpfCliente character(11) UNIQUE NOT NULL,
   dataNasc date NOT NULL,
   telefoneCliente character(11),
+  timeAmado character varying(50) NOT NULL,
+  onePiece boolean NOT NULL,
+  cidade character varying(50) NOT NULL,
   PRIMARY KEY (codCliente)
 );
 
@@ -28,6 +31,13 @@ CREATE TABLE IF NOT EXISTS piloto (
 	FOREIGN KEY (codEquipe) REFERENCES equipe(codEquipe)
 );
 
+CREATE TABLE IF NOT EXISTS fabricante (
+  codFabricante serial NOT NULL,
+  nomeFabricante character varying(100) UNIQUE NOT NULL,
+  cidadeFabricante character varying(50) NOT NULL,
+  PRIMARY KEY (codFabricante)
+);
+
 CREATE TABLE IF NOT EXISTS produto(
   codProd serial NOT NULL,
   nomeProd character varying(50) NOT NULL,
@@ -35,18 +45,34 @@ CREATE TABLE IF NOT EXISTS produto(
   qtd integer NOT NULL,
   valor numeric(10, 2) NOT NULL,
   ano_temporada integer,
+  categoria character varying(50) NOT NULL,
   codEquipe integer,
   codPiloto integer,
+  codFabricante integer NOT NULL,
   PRIMARY KEY (codProd),
 	FOREIGN KEY (codEquipe) REFERENCES equipe(codEquipe),
-  FOREIGN KEY (codPiloto) REFERENCES piloto(codPiloto)
+  FOREIGN KEY (codPiloto) REFERENCES piloto(codPiloto),
+  FOREIGN KEY (codFabricante) REFERENCES fabricante(codFabricante)
+);
+
+CREATE TABLE IF NOT EXISTS vendedor (
+  codVendedor SERIAL PRIMARY KEY,
+  nomeVendedor VARCHAR(100) NOT NULL,
+  emailVendedor VARCHAR(100) UNIQUE NOT NULL,
+  dataNasc date NOT NULL,
+  telefoneVendedor character(11)
+);
+
+CREATE TABLE IF NOT EXISTS statusVenda (
+  codStatus SERIAL PRIMARY KEY,
+  nomeStatus VARCHAR(30) UNIQUE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS venda (
   codVenda serial NOT NULL,
   dataVenda timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
   valorVenda numeric(10, 2) NOT NULL,
-  codStatus INTEGER NOT NULL DEFAULT 1,,
+  codStatus INTEGER NOT NULL DEFAULT 1,
   codCliente integer NOT NULL,
   codVendedor INTEGER NOT NULL,
   PRIMARY KEY (codVenda),
@@ -64,17 +90,3 @@ CREATE TABLE IF NOT EXISTS produtoVenda (
   FOREIGN KEY (codVenda) REFERENCES venda(codVenda),
   FOREIGN KEY (codProd) REFERENCES produto(codProd)
 );
-
-CREATE TABLE IF NOT EXISTS vendedor (
-  codVendedor SERIAL PRIMARY KEY,
-  nomeVendedor VARCHAR(100) NOT NULL,
-  emailVendedor VARCHAR(100) UNIQUE NOT NULL,
-  dataNasc date NOT NULL,
-  telefoneVendedor character(11)
-);
-
-CREATE TABLE IF NOT EXISTS statusVenda (
-  codStatus SERIAL PRIMARY KEY,
-  nomeStatus VARCHAR(30) UNIQUE NOT NULL
-);
-

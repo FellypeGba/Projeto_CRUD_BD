@@ -46,7 +46,10 @@ def cadastrarCliente():
     "emailcliente": input("Email: "),
     "cpfcliente": input("CPF (apenas números): "),
     "datanasc": input("Data de Nascimento: "),
-    "telefonecliente": input("Telefone (opcional): ")
+    "telefonecliente": input("Telefone (opcional): "),
+    "timeamado": input("Time do coração: "),
+    "onepiece": input("Assiste One Piece (S/N): ").strip().lower() in ['sim', 's'],
+    "cidade": input("Cidade: ")
   }
   
   sucesso, resposta = handle_request("POST", f"{BASE_URL}/clientes", json=dados_cliente)
@@ -63,7 +66,10 @@ def mostrarCliente(cliente):
     "nomecliente",
     "emailcliente",
     "datanasc",
-    "telefonecliente"
+    "telefonecliente",
+    "timeamado",
+    "onepiece",
+    "cidade"
   ]
   if sucesso and dados:
     mostrarTabela(dados, colunas_cliente)
@@ -93,7 +99,7 @@ def filtrarProdutos():
       break;
     sucesso, produtos = handle_request("GET", f"{BASE_URL}/produtos/busca?nome={nomeProd}")
     if sucesso and produtos:
-      mostrarTabela(produtos, ["codprod", "nomeprod", "descricao", "valor", "qtd"])
+      mostrarTabela(produtos, ["codprod", "nomeprod", "descricao", "valor", "qtd", "categoria", "fabricante"])
     elif sucesso and not produtos:
       print("\nNenhum produto encontrado com este termo.")
     else:
@@ -102,7 +108,7 @@ def filtrarProdutos():
 def listarProdutos():
   sucesso, produtos = handle_request("GET", f"{BASE_URL}/produtos")
   if sucesso:
-    mostrarTabela(produtos, ["codprod", "nomeprod", "descricao", "valor", "qtd"])
+    mostrarTabela(produtos, ["codprod", "nomeprod", "descricao", "valor", "qtd", "categoria", "fabricante"])
     return produtos
   else:
     print(f"\nErro ao buscar produtos: {produtos}")

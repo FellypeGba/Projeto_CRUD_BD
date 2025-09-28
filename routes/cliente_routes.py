@@ -8,7 +8,10 @@ cliente_bp = Blueprint("cliente", __name__)
 def criar_cliente():
   try:
     data = request.json
-    model_cliente.inserir(data["nomecliente"], data["emailcliente"], data["cpfcliente"], data["datanasc"], data["telefonecliente"])
+    model_cliente.inserir(
+      data["nomecliente"], data["emailcliente"], data["cpfcliente"], data["datanasc"], data["telefonecliente"],
+      data["timeamado"], data["onepiece"], data["cidade"]
+    )
     return jsonify({"message": "Cliente criado com sucesso"})
   
   except psycopg2.errors.UniqueViolation as e:
@@ -59,4 +62,3 @@ def buscar_clientes():
   elif nome:
     clientes = model_cliente.filtrarNome(nome)
     return jsonify(clientes)
-  
