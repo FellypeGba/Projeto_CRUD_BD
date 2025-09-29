@@ -1,3 +1,4 @@
+from urllib.parse import urlencode
 import requests
 import os
 
@@ -73,6 +74,7 @@ def operacoes(entidade):
   print("3. Inserir")
   print("4. Atualizar")
   print("5. Deletar")
+  if (entidade == "produtos"): print("6. Busca Avançada")
   print("0. Voltar")
   return input("Escolha a operação: ")
 
@@ -149,6 +151,49 @@ def buscar(entidade):
   if sucesso and dados:
     mostrarTabela(dados, ENTIDADES[entidade])
 
+def filtrarProdutos():
+  limparTela()
+  print("--- Consulta de Produtos Avançada ---")
+  print("Deixe o campo em branco e pressione Enter para não usar um filtro.")
+
+  nome = input("\nNome do produto: ")
+  categoria = input("Categoria: ")
+  preco_min = input("Preço mínimo (ex: 50.00): ")
+  preco_max = input("Preço máximo (ex: 200.00): ")
+  fabricadoMari = input("Apenas fabricados em Mari? (S/N): ")
+  estoque_baixo = input("Verificar produtos com estoque baixo? (S/N): ")
+
+  params = {}
+  if nome:
+    params['nome'] = nome
+  if categoria:
+    params['categoria'] = categoria
+  if preco_min:
+    params['preco_min'] = preco_min
+  if preco_max:
+    params['preco_max'] = preco_max
+  if fabricadoMari.strip().lower() == 's':
+    params['mari'] = 'true'
+  if estoque_baixo.strip().lower() == 's':
+    params['estoque_baixo'] = 'true'
+  
+
+  if not params:
+    print("\nNenhum filtro aplicado. Buscando todos os produtos...")
+  
+  query_string = urlencode(params)
+  url_final = f"{BASE_URL}/produtos/busca?{query_string}"
+  print(url_final)
+  print("\nBuscando...")
+  sucesso, produtos = handle_request("GET", url_final)
+
+  if sucesso and produtos:
+    mostrarTabela(produtos, ["codprod", "nomeprod", "descricao", "valor", "qtd", "categoria", "fabricante", "cidadefabricante"])
+  elif sucesso and not produtos:
+    print("\nNenhum produto encontrado com os filtros aplicados.")
+  else:
+    print(f"\nErro ao buscar produtos: {produtos}")
+
 def gerar_relatorio(entidade):
   print("--- RELATÓRIO GERAL DE VENDAS ---")
   sucesso, relatorio = handle_request("GET", f"{BASE_URL}/vendas/relatorio")
@@ -207,6 +252,10 @@ def crud(entidade):
     elif op == "5":  # Deletar
       listar(entidade)
       deletar(entidade)
+      input("\nPressione Enter para continuar...")
+
+    elif op == "6" and entidade == "produtos":
+      filtrarProdutos()
       input("\nPressione Enter para continuar...")
 
     elif op == "0":

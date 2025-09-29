@@ -25,8 +25,28 @@ def deletar_produto(codProd):
   model_produto.deletar(codProd)
   return jsonify({"mensagem": f"Produto {codProd} deletado com sucesso."})
 
-@produto_bp.route("/produtos/busca", methods=["GET"])
+""" @produto_bp.route("/produtos/busca", methods=["GET"])
 def buscar_produto():
   nomeProd = request.args.get('nome')
   produtos = model_produto.filtrarNome(nomeProd) or ""
+  return jsonify(produtos) """
+
+@produto_bp.route("/produtos/busca", methods=["GET"])
+def filtrar_produtos():
+  nome = request.args.get('nome')
+  categoria = request.args.get('categoria')
+  preco_min = request.args.get('preco_min', type=float)
+  preco_max = request.args.get('preco_max', type=float)
+  fabricadoMari = request.args.get('mari', 'false').lower() == 'true'
+  estoque_baixo = request.args.get('estoque_baixo', 'false').lower() == 'true'
+
+  produtos = model_produto.filtrar_produtos(
+    nome=nome,
+    categoria=categoria,
+    preco_min=preco_min,
+    preco_max=preco_max,
+    fabricadoMari=fabricadoMari,
+    estoque_baixo=estoque_baixo
+  )
+
   return jsonify(produtos)

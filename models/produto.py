@@ -60,6 +60,58 @@ def filtrarNome(nome):
   conn.close()
   return produtos
 
+def filtrar_produtos(nome=None, categoria=None, preco_min=None, preco_max=None, fabricadoMari=False, estoque_baixo=False):
+  conn = get_connection()
+  cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+  query_base = """
+    SELECT 
+      p.codProd, p.nomeProd, p.descricao, p.qtd, p.valor, p.ano_temporada, 
+      p.categoria, p.codEquipe, p.codPiloto, 
+      f.nomeFabricante AS fabricante
+    FROM produto p
+    INNER JOIN fabricante f ON p.codFabricante = f.codFabricante
+  """
+
+  condicoes = []
+  parametros = []
+
+  if nome:
+    condicoes.append("p.nomeProd ILIKE %s")
+    parametros.append(f"%{nome}%")
+  
+  if categoria:
+    condicoes.append("p.categoria ILIKE %s")
+    parametros.append(f"%{categoria}%")
+
+  if preco_min is not None:
+    condicoes.append("p.valor >= %s")
+    parametros.append(preco_min)
+  
+  if preco_max is not None:
+    condicoes.append("p.valor <= %s")
+    parametros.append(preco_max)
+  
+  if fabricadoMari:
+    condicoes.append("f.cidadeFabricante = %s")
+    parametros.append("Mari")
+
+  if estoque_baixo:
+    condicoes.append("p.qtd < %s")
+    parametros.append(5)
+
+  if condicoes:
+    query_final = query_base + " WHERE " + " AND ".join(condicoes)
+  else:
+    query_final = query_base
+  
+  cur.execute(query_final, tuple(parametros))
+
+  produtos = [dict(row) for row in cur.fetchall()]
+  cur.close()
+  conn.close()
+  return produtos
+
 def deletar(id):
   conn = get_connection()
   cur = conn.cursor()

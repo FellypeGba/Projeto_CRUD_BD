@@ -99,11 +99,11 @@ CREATE TABLE IF NOT EXISTS produtoVenda (
 CREATE OR REPLACE FUNCTION atualizar_estoque()
 RETURNS TRIGGER AS $$
 BEGIN
-    UPDATE produto
-    SET qtd = qtd - NEW.qtdVenda
-    WHERE codProd = NEW.codProd;
+  UPDATE produto
+  SET qtd = qtd - NEW.qtdVenda
+  WHERE codProd = NEW.codProd;
 
-    RETURN NEW;
+  RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 

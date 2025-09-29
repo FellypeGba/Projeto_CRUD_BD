@@ -2,6 +2,7 @@ import requests
 import os
 import json
 from datetime import datetime
+from urllib.parse import urlencode
 
 BASE_URL = "http://127.0.0.1:5000"
 
@@ -91,19 +92,45 @@ def loginCliente():
   input("Pressione Enter para continuar...")
 
 def filtrarProdutos():
-  print("\n--- Consulta de Produtos ---")
+  limparTela()
+  print("--- Consulta de Produtos ---")
+  print("Deixe o campo em branco e pressione Enter para não usar um filtro.")
 
-  while True:
-    nomeProd = input("\nDigite o nome para filtar (0 para sair): ")
-    if nomeProd == '0':
-      break;
-    sucesso, produtos = handle_request("GET", f"{BASE_URL}/produtos/busca?nome={nomeProd}")
-    if sucesso and produtos:
-      mostrarTabela(produtos, ["codprod", "nomeprod", "descricao", "valor", "qtd", "categoria", "fabricante"])
-    elif sucesso and not produtos:
-      print("\nNenhum produto encontrado com este termo.")
-    else:
-      print(f"\nErro ao buscar produtos: {produtos}")
+  nome = input("\nNome do produto: ")
+  categoria = input("Categoria: ")
+  preco_min = input("Preço mínimo (ex: 50.00): ")
+  preco_max = input("Preço máximo (ex: 200.00): ")
+  fabricadoMari = input("Apenas fabricados em Mari? (S/N): ")
+
+  params = {}
+  if nome:
+    params['nome'] = nome
+  if categoria:
+    params['categoria'] = categoria
+  if preco_min:
+    params['preco_min'] = preco_min
+  if preco_max:
+    params['preco_max'] = preco_max
+  if fabricadoMari.strip().lower() == 's':
+    params['mari'] = 'true'
+
+  if not params:
+    print("\nNenhum filtro aplicado. Buscando todos os produtos...")
+  
+  query_string = urlencode(params)
+  url_final = f"{BASE_URL}/produtos/busca?{query_string}"
+  print(url_final)
+  print("\nBuscando...")
+  sucesso, produtos = handle_request("GET", url_final)
+
+  if sucesso and produtos:
+    mostrarTabela(produtos, ["codprod", "nomeprod", "descricao", "valor", "qtd", "categoria", "fabricante", "cidadefabricante"])
+  elif sucesso and not produtos:
+    print("\nNenhum produto encontrado com os filtros aplicados.")
+  else:
+    print(f"\nErro ao buscar produtos: {produtos}")
+
+  input("\nPressione Enter para continuar...")
 
 def listarProdutos():
   sucesso, produtos = handle_request("GET", f"{BASE_URL}/produtos")
