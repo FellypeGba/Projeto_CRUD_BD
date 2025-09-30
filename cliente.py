@@ -119,7 +119,6 @@ def filtrarProdutos():
   
   query_string = urlencode(params)
   url_final = f"{BASE_URL}/produtos/busca?{query_string}"
-  print(url_final)
   print("\nBuscando...")
   sucesso, produtos = handle_request("GET", url_final)
 

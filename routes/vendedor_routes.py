@@ -16,13 +16,6 @@ def listar_vendedores():
     vendedores = model_vendedor.listar()
     return jsonify(vendedores)
 
-@vendedor_bp.route("/vendedores/<int:id>", methods=["GET"])
-def obter_vendedor(id):
-    vendedor = model_vendedor.obter(id)
-    if vendedor:
-        return jsonify(vendedor)
-    return jsonify({"message": "Vendedor não encontrado"}), 404
-
 @vendedor_bp.route("/vendedores/<int:id>", methods=["PUT"])
 def atualizar_vendedor(id):
     data = request.json
@@ -34,10 +27,20 @@ def atualizar_vendedor(id):
     return jsonify({"message": "Vendedor não encontrado"}), 404
 
 @vendedor_bp.route("/vendedores/busca", methods=["GET"])
-def buscar_vendedores():
-    nome = request.args.get("nome", "")
-    resultado = model_vendedor.filtrarNome(nome)
-    return jsonify(resultado)
+def buscar_vendedor():
+  email = request.args.get('email')
+  nome = request.args.get('nome')
+
+  if email:
+    vendedor = model_vendedor.buscaEmail(email)
+    if vendedor:
+      return jsonify(vendedor)
+    else:
+      return jsonify({"erro": "Vendedor com este email não foi encontrado"})
+    
+  elif nome:
+    vendedor = model_vendedor.filtrarNome(nome)
+    return jsonify(vendedor)
 
 ## Deletar vendedor ??
 @vendedor_bp.route("/vendedores/<int:id>", methods=["DELETE"])
@@ -46,5 +49,13 @@ def deletar_vendedor(id):
     if deletado:
         return jsonify({"message": "Vendedor deletado com sucesso"})
     return jsonify({"message": "Vendedor não encontrado"}), 404
+
+@vendedor_bp.route("/vendedores/<int:codVendedor>", methods=["GET"])
+def exibir_vendedor(codVendedor):
+  vendedor = model_vendedor.exibirUm(codVendedor)
+  if vendedor:
+    return jsonify(vendedor)
+  else:
+    return jsonify({"erro": "Vendedor não encontrado"})
 
 

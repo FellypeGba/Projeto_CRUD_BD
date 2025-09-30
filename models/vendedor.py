@@ -36,3 +36,21 @@ def filtrarNome(nome):
     cur.close()
     conn.close()
     return vendedores
+
+def exibirUm(id):
+  conn = get_connection()
+  cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+  cur.execute("SELECT * FROM vendedor WHERE codVendedor =%s;", (id,))
+  vendedor = cur.fetchone()
+  cur.close()
+  conn.close()
+  return dict(vendedor)
+
+def buscaEmail(email):
+  conn = get_connection()
+  cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+  cur.execute("SELECT * FROM vendedor WHERE emailVendedor = %s;", (email,))
+  vendedor = cur.fetchone()
+  cur.close()
+  conn.close()
+  return dict(vendedor)

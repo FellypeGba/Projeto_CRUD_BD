@@ -26,6 +26,25 @@ def relatorio_vendas():
   relatorio = model_venda.gerar_relatorio()
   return jsonify(relatorio)
 
+@venda_bp.route("/vendas/relatorio/vendedor/<int:codVendedor>", methods=["GET"])
+def relatorio_mensal_por_vendedor(codVendedor):
+  try:
+    ano = request.args.get('ano', type=int)
+    mes = request.args.get('mes', type=int)
+
+    if not ano or not mes:
+      return jsonify({"erro": "Os parâmetros 'ano' e 'mês' são obrigatórios na consulta."}), 400
+
+    relatorio = model_venda.gerar_relatorio_vendedor_mensal(codVendedor, mes, ano)
+
+    if relatorio:
+      return jsonify(relatorio)
+    else:
+      return jsonify({"mensagem": "Nenhum dado de venda encontrado para este vendedor no período especificado."}), 404
+      
+  except Exception as e:
+    return jsonify({"erro": str(e)}), 500
+
 
 #Opcional: Deletar venda
 
